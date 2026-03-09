@@ -13,3 +13,17 @@ langchain-openai
 langchain-huggingface
 transformers
 torch
+arxiv
+requests
+pymupdf
+chromadb
+sentence-transformers
+pydantic>=2.0
+PyYAML
+markdown2
+weasyprint
+biopython
+networkx
+python-slugify
+pytest
+ollama

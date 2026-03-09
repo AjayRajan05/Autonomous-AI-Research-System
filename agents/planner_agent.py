@@ -1,31 +1,40 @@
-#from langchain_openai import ChatOpenAI
+import json
+import requests
+import logging
+from schemas.research_plan import ResearchPlan
+from tools.config_loader import load_settings, load_prompts
+
+logger = logging.getLogger(__name__)
+
+settings = load_settings()
+prompts = load_prompts()
 
 
-from langchain_huggingface import HuggingFacePipeline
-from transformers import pipeline
+class PlannerAgent:
+
+    def run(self, query: str) -> ResearchPlan:
+
+        prompt = prompts["planner"] + "\n\nQuery:\n" + query
+
+        payload = {
+            "model": settings["llm"]["model"],
+            "prompt": prompt,
+            "stream": False
+        }
+
+        r = requests.post(settings["llm"]["base_url"], json=payload)
+
+        text = r.json()["response"]
+
+        data = json.loads(text)
+
+        return ResearchPlan(**data)
 
 
-#hf_pipe = pipeline("text-generation", model="microsoft/Phi-3-mini-4k-instruct", trust_remote_code=True)
-#hf_pipe = pipeline("text-generation", model="gpt2", max_new_tokens=50, truncation = True, max_length=1024)
-hf_pipe = pipeline(
-    "text-generation", 
-    model="microsoft/Phi-3-mini-4k-instruct", 
-    trust_remote_code=True,
-    max_new_tokens=500,
-    device_map="auto"
-)
-llm = HuggingFacePipeline(pipeline=hf_pipe)
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    agent = PlannerAgent()
 
-#llm = ChatOpenAI()
+    plan = agent.run("transformer models for medical imaging")
 
-def planner(query):
-
-    prompt = f"""
-    Break this research task into steps.
-
-    Task: {query}
-
-    Output list of tasks.
-    """
-
-    return llm.invoke(prompt)
+    print(plan)

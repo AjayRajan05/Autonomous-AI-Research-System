@@ -1,11 +1,27 @@
-from graphs.research_graph import build_graph
+import argparse
+from pipelines.router import Router
+from memory.session_memory import SessionMemory
 
-graph = build_graph()
+def main():
 
-state = {
-    "query":"traffic prediction using machine learning"
-}
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--topic", type=str, required=True, help="Research topic")
+    parser.add_argument("--mode", type=str, default="literature", help="literature | datascience")
 
-result = graph.invoke(state)
+    args = parser.parse_args()
 
-print(result["report"])
+    topic = args.topic
+    mode = args.mode
+
+    memory = SessionMemory()
+    router = Router(memory)
+
+    pipeline = router.route(mode)
+
+    report = pipeline.run(topic)
+
+    print("\nResearch Completed")
+    print("Report saved.")
+
+if __name__ == "__main__":
+    main()

@@ -1,45 +1,74 @@
-#from langchain_openai import ChatOpenAI
+import markdown2
+from pathlib import Path
+from datetime import datetime
+from slugify import slugify
+from tools.pdf_report import markdown_to_pdf
+from schemas.report import ResearchReport
+from tools.config_loader import load_settings
 
-from langchain_huggingface import HuggingFacePipeline
-from transformers import pipeline
 
-#hf_pipe = pipeline("text-generation", model="gpt2", max_new_tokens=512, truncation = True, max_length=1024)
-#hf_pipe = pipeline("text-generation", model="microsoft/Phi-3-mini-4k-instruct", trust_remote_code=True)
-hf_pipe = pipeline(
-    "text-generation", 
-    model="microsoft/Phi-3-mini-4k-instruct", 
-    trust_remote_code=True,
-    max_new_tokens=500,
-    device_map="auto"
-)
-llm = HuggingFacePipeline(pipeline=hf_pipe)
+settings = load_settings()
 
-#llm = ChatOpenAI()
 
-def generate_report(state):
+class ReportAgent:
 
-    query = state["query"]
+    def run(self, plan, papers, synthesis, insights):
 
-    #summaries = state["summaries"]
-    #evaluation = state["evaluation"]
+        summary = synthesis["consensus"]
 
-    summaries = str(state.get("summaries", ""))[-1500:] 
-    evaluation = str(state.get("evaluation", ""))[-1000:]
+        report = ResearchReport(
+            query=plan.original_query,
+            summary=summary,
+            technologies=[],
+            key_findings=synthesis["trends"],
+            research_gaps=insights["gaps"],
+            future_directions=insights["future_directions"],
+            paper_count=len(papers),
+            sources=[p.url for p in papers]
+        )
 
-    prompt = f"""
-    Write a research report.
+        md = self.render_md(report)
 
-    Topic: {query}
+        name = slugify(plan.original_query)
 
-    Literature:
-    {summaries}
+        ts = datetime.now().strftime("%Y%m%d_%H%M")
 
-    Results:
-    {evaluation}
-    """
+        path = Path(settings["paths"]["reports_dir"]) / f"{name}_{ts}.md"
 
-    report = llm.invoke(prompt)
+        path.write_text(md)
 
-    state["report"] = report
+        return report, path
 
-    return state
+    def render_md(self, report):
+
+        md = f"""
+        # Research Report
+
+        Query: {report.query}
+
+        ## Summary
+        {report.summary}
+
+        ## Key Findings
+        {chr(10).join("- "+x for x in report.key_findings)}
+
+        ## Research Gaps
+        {chr(10).join("- "+x for x in report.research_gaps)}
+
+        ## Future Directions
+        {chr(10).join("- "+x for x in report.future_directions)}
+        """
+
+        return md
+
+    def save_report(self, report):
+
+        md_file = f"reports/{report.title}.md"
+        pdf_file = f"reports/{report.title}.pdf"
+
+        with open(md_file, "w") as f:
+            f.write(report.content)
+
+        markdown_to_pdf(report.content, pdf_file)
+
+        return md_file, pdf_file

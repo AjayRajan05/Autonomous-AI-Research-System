@@ -1,24 +1,32 @@
+import chromadb
 from sentence_transformers import SentenceTransformer
-import faiss
-import numpy as np
 
 class VectorStore:
 
     def __init__(self):
+
+        self.client = chromadb.Client()
+        self.collection = self.client.get_or_create_collection("papers")
+
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
-        self.texts = []
-        self.index = faiss.IndexFlatL2(384)
 
-    def add_documents(self, docs):
+    def add_paper(self, paper):
 
-        embeddings = self.model.encode(docs)
-        self.index.add(np.array(embeddings))
+        embedding = self.model.encode(paper["abstract"]).tolist()
 
-        self.texts.extend(docs)
+        self.collection.add(
+            documents=[paper["abstract"]],
+            embeddings=[embedding],
+            ids=[paper["title"]]
+        )
 
-    def search(self, query, k=3):
+    def search(self, query):
 
-        q_emb = self.model.encode([query])
-        distances, indices = self.index.search(q_emb, k)
+        embedding = self.model.encode(query).tolist()
 
-        return [self.texts[i] for i in indices[0]]
+        results = self.collection.query(
+            query_embeddings=[embedding],
+            n_results=5
+        )
+
+        return results
