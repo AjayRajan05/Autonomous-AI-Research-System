@@ -1,0 +1,15 @@
+langchain
+langgraph
+openai
+arxiv
+faiss-cpu
+sentence-transformers
+pydantic
+tqdm
+pandas
+scikit-learn
+matplotlib
+langchain-openai
+langchain-huggingface
+transformers
+torch

@@ -1,0 +1,37 @@
+# Global configuration for AI Research Platform
+
+# Local LLM configuration (Ollama)
+llm:
+  provider: "ollama"
+  model: "tinyllama"
+  base_url: "http://localhost:11434/api/generate"
+  temperature: 0.2
+  max_tokens: 2048
+
+# Paper retrieval limits
+retrieval:
+  max_papers_per_query: 20
+  timeout_seconds: 30
+
+# Paths
+paths:
+  cache_dir: "./cache"
+  reports_dir: "./reports"
+  vector_db_path: "./memory/chroma_db"
+
+# Logging
+logging:
+  level: "INFO"
+
+# Embedding model
+embedding:
+  model: "all-MiniLM-L6-v2"
+
+# PDF parsing
+pdf:
+  max_pages: 50
+
+# Caching
+cache:
+  enabled: true
+  ttl_days: 7
