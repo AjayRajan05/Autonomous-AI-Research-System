@@ -1,32 +1,61 @@
 # AI Research Platform
 
-An **autonomous multi-agent AI system for scientific literature discovery, analysis, and report generation**.
+An **autonomous multi-agent AI system for scientific literature discovery, analysis, and report generation with ML experimentation**.
 
-This platform performs **end-to-end research automation**: discovering papers, expanding literature networks, constructing citation graphs, synthesizing insights, and generating structured research reports.
+This platform performs **end-to-end research automation**: discovering papers, expanding literature networks, constructing citation graphs, synthesizing insights, running ML experiments, and generating structured research reports.
 
-The system is designed to operate on **any research topic at runtime** and mimics the workflow of a human researcher.
+The system is designed to operate on **any research topic at runtime** with both interactive and command-line interfaces, mimicking the workflow of a human researcher.
 
 ---
 
 # Overview
 
-Modern research requires navigating thousands of scientific papers across multiple databases. This platform automates the research workflow using a **modular multi-agent architecture**.
+Modern research requires navigating thousands of scientific papers across multiple databases. This platform automates the research workflow using a **modular multi-agent architecture** with real-time logging and error handling.
 
 Key capabilities:
 
-* Autonomous literature discovery
-* Recursive research exploration
-* Citation graph construction
-* Semantic memory via vector embeddings
-* Research synthesis and insight generation
-* Markdown and PDF report generation
-* Experiment pipeline support for data-science topics
+* **Autonomous literature discovery** from multiple sources
+* **Recursive research exploration** with depth control
+* **Citation graph construction** and analysis
+* **Semantic memory** via vector embeddings
+* **Research synthesis** and insight generation
+* **Real ML experiments** with multiple model types
+* **Markdown and PDF report generation**
+* **Interactive and command-line interfaces**
+* **Comprehensive logging** and error recovery
+* **Generic platform** - works with any research topic
 
 The platform integrates with major research repositories including:
 
 * arXiv
 * Semantic Scholar
 * PubMed
+
+---
+
+# What's New ✨
+
+## Recent Major Updates
+
+### **Critical Fixes & Enhancements**
+- **Fixed Router Architecture**: Resolved import issues and created proper Router class
+- **Real ML Experiments**: Implemented actual model training (Random Forest, Neural Networks, Transformers)
+- **Robust Error Handling**: Added comprehensive error recovery across all agents
+- **Interactive Mode**: User-friendly input system for dynamic research topics
+- **Enhanced Logging**: Real-time agent activity logs in terminal and files
+- **Generic Platform**: No more hardcoded queries - works with any topic
+
+### **New ML Experiment Capabilities**
+- **Multiple Models**: Random Forest, Logistic Regression, Neural Networks, Attention-based Transformers
+- **Real Datasets**: Iris, Wine, Synthetic classification datasets
+- **Performance Metrics**: Accuracy, F1-score, model comparison
+- **GPU Support**: Automatic CUDA detection and utilization
+
+### **Improved User Experience**
+- **Interactive Mode**: `python main.py --interactive`
+- **Better Error Messages**: Clear feedback and fallback options
+- **Progress Tracking**: Real-time pipeline progress updates
+- **Flexible Input**: Support for any research topic at runtime
 
 ---
 
@@ -433,26 +462,64 @@ configs/settings.yaml
 
 # Usage
 
-Run the system with a research topic.
+## Interactive Mode (Recommended)
 
+Start the platform in interactive mode for dynamic research topics:
+
+```bash
+python main.py --interactive
 ```
+
+This will launch a user-friendly interface where you can:
+- Enter any research topic
+- Choose between literature or datascience modes
+- See real-time progress and agent logs
+- Get immediate feedback and results
+
+## Command Line Mode
+
+Run the system directly with command line arguments:
+
+```bash
+# Basic literature review
 python main.py --topic "Graph Neural Networks for Drug Discovery"
+
+# Literature review + ML experiments
+python main.py --topic "AI agents for autonomous software development" --mode datascience
+
+# Show help
+python main.py --help
 ```
 
-Example topics:
+## Available Modes
 
-```
-python main.py --topic "AI agents for autonomous software development"
+- **literature**: Literature review, synthesis, and report generation
+- **datascience**: Literature review + ML experiments with real model training
 
+## Example Topics
+
+```bash
+# Computer Science
+python main.py --topic "Transformer architectures for NLP" --mode datascience
+python main.py --topic "Graph neural networks for drug discovery"
+
+# Medical Research
 python main.py --topic "Self-supervised learning in medical imaging"
+python main.py --topic "AI applications in genomics"
 
-python main.py --topic "Large language models for scientific discovery"
+# General Research
+python main.py --topic "Climate change modeling with machine learning"
+python main.py --topic "Quantum computing applications"
 ```
+
+## Output
 
 Reports will be generated in:
 
 ```
 reports/
+├── topic_name_20240310_1430.md    # Markdown report
+└── topic_name_20240310_1430.pdf   # PDF report
 ```
 
 Outputs include:
@@ -464,21 +531,55 @@ topic_name.pdf
 
 ---
 
+# Logging
+
+All agent activities are logged to:
+- **Terminal**: Real-time progress updates with timestamps
+- **File**: `research_platform.log` for detailed analysis
+
+Example log output:
+```
+2024-03-10 14:30:15 - __main__ - INFO - Starting research on topic: "Graph Neural Networks"
+2024-03-10 14:30:16 - retrieval_agent - INFO - Retrieving papers for queries: ['Graph Neural Networks']
+2024-03-10 14:30:18 - exploration_agent - INFO - Starting exploration with 10 seed papers
+2024-03-10 14:30:25 - experiment_agent - INFO - Running experiments for models: ['random_forest', 'neural_network']
+```
+
+---
+
 # Example Output
 
 Generated report structure:
 
 ```
-Title
-Abstract
-Introduction
-Related Work
-Methodologies
-Key Findings
-Research Gaps
-Future Directions
-References
+# Research Report
+
+**Topic:** [Your Research Topic]
+
+## Summary
+[Comprehensive synthesis of findings]
+
+## Key Findings
+- [Key insight 1]
+- [Key insight 2]
+
+## Research Gaps
+- [Identified gap 1]
+- [Identified gap 2]
+
+## Future Directions
+- [Recommendation 1]
+- [Recommendation 2]
+
+## Sources
+- [Paper 1 with link]
+- [Paper 2 with link]
 ```
+
+For datascience mode, additional sections include:
+- **ML Experiments Performed**
+- **Model Performance Comparison**
+- **Best Performing Model**
 
 ---
 
@@ -491,13 +592,16 @@ Core components include:
 * Vector Databases
 * Graph Analysis
 * Academic Search APIs
+* Machine Learning Frameworks
+* Interactive CLI Interface
 
 Libraries used:
 
-* ChromaDB
-* NetworkX
-* Sentence Transformers
-* WeasyPrint
+* **Core**: ChromaDB, NetworkX, Sentence Transformers, WeasyPrint
+* **ML/ML**: PyTorch, Scikit-learn, Transformers, Pandas, NumPy
+* **Search**: arXiv, Semantic Scholar, PubMed APIs
+* **UI**: Rich terminal output, Interactive prompts
+* **Processing**: RapidFuzz, PyMuPDF, Markdown2
 
 ---
 
@@ -505,18 +609,23 @@ Libraries used:
 
 This platform can support:
 
-* literature review automation
-* research trend discovery
-* knowledge graph construction
-* research gap identification
-* rapid academic exploration
+* **Literature Review Automation** - Comprehensive paper discovery and synthesis
+* **ML Experiment Validation** - Test models and methodologies from papers
+* **Research Trend Discovery** - Identify emerging patterns and directions
+* **Knowledge Graph Construction** - Build citation and semantic networks
+* **Research Gap Identification** - Find unexplored areas and opportunities
+* **Rapid Academic Exploration** - Quick analysis of new research domains
+* **Comparative Model Analysis** - Benchmark different ML approaches
+* **Real-time Research Monitoring** - Track agent activities and progress
 
 Potential users include:
 
-* academic researchers
-* graduate students
-* R&D engineers
-* data scientists
+* **Academic Researchers** - Literature reviews and gap analysis
+* **Graduate Students** - Thesis research and topic exploration
+* **R&D Engineers** - Technology scouting and validation
+* **Data Scientists** - Model benchmarking and experimentation
+* **Research Labs** - Automated literature monitoring
+* **Industry Analysts** - Technology trend analysis
 
 ---
 
